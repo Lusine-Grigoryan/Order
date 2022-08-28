@@ -1,0 +1,87 @@
+﻿@page "/providers{Id:int}"
+@using Order.Common.Models
+@using Order.Common.Helpers
+@inject HttpClient Http
+@inject NavigationManager nav
+@inject HelpSevice helpSevice
+
+<button class="btn btn-primary" @onclick="@GetProviders">Show Providers</button>
+
+@code {
+    private ProviderUIModel[] providers;
+
+    private async Task GetProviders()
+    {
+        providers = await Http.GetFromJsonAsync<ProviderUIModel[]>("https://localhost:44377/Provider/Get");
+    }
+
+}
+@if (providers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address1</th>
+                <th>Address2</th>
+                <th>City</th>
+                <th>Zip</th>
+                <th>State</th>
+                <th>View Provider</th>
+                <th>Edit Provider</th>
+                <th>Add Provider</th>
+                <th>Delete Provider</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var provider in providers)
+            {
+                <tr>
+                    <td>@provider.Id</td>
+                    <td>@provider.Name</td>
+                    <td>@provider.Address1</td>
+                    <td>@provider.Address2</td>
+                    <td>@provider.City</td>
+                    <td>@provider.Zip</td>
+                    <td>@provider.State?.Name</td>
+                    <td><button class="btn btn-primary" @onclick="() => ViewProvider(provider)"></button>View</td>
+                    <td><button class="btn btn-primary" @onclick="() => EditProvider(provider)"></button>Edit</td>
+                    <td><button class="btn btn-primary" @onclick="@AddProvider"></button>Add</td>
+                    <td><button class="btn btn-primary" @onclick="() => DeleteProvider(provider)"></button>Delete</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @code {
+        void ViewProvider(ProviderUIModel provider)
+        {
+            helpSevice.provider = provider;
+            nav.NavigateTo("View");
+        }
+
+        void EditProvider(ProviderUIModel provider)
+        {
+            helpSevice.provider = provider;
+            nav.NavigateTo("Edit");
+
+        }
+
+        void DeleteProvider(ProviderUIModel provider)
+        {
+            helpSevice.provider = provider;
+            nav.NavigateTo("Delete");
+        }
+        void AddProvider()
+        {
+            nav.NavigateTo("Add");
+        }
+    }
+}
+
+

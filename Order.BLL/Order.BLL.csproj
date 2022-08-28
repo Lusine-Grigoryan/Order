@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Order.Common\Order.Common.csproj" />
+    <ProjectReference Include="..\Order.Configuration\Order.Configuration.csproj" />
+    <ProjectReference Include="..\Order\Shared\Order.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

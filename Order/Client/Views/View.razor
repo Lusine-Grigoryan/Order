@@ -1,0 +1,24 @@
+﻿@page "/view"
+@using Order.Common.Helpers
+@inject HelpSevice helpSevice
+
+<h1>View Provider</h1>
+
+@if (helpSevice.provider == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <div>
+           <span><b>Id</b></span><br />        <input disabled="disabled" type="text" value="@helpSevice.provider.Id" />
+           <span><b>Name</b></span><br />      <input disabled="disabled" type="text" value="@helpSevice.provider.Name" />
+           <span><b>Address1</b></span><br />  <input disabled="disabled" type="text" value="@helpSevice.provider.Address1" />
+           <span><b>Address2</b></span><br />  <input disabled="disabled" type="text" value="@helpSevice.provider.Address2" />
+           <span><b>City</b></span><br />      <input disabled="disabled" type="text" value="@helpSevice.provider.City" />
+           <span><b>Zip</b></span><br />       <input disabled="disabled" type="text" value="@helpSevice.provider.Zip" />
+           <span><b>State</b></span><br />     <input disabled="disabled" type="text" value="@helpSevice.provider?.State?.Name" />
+        </div>
+    </div>
+}

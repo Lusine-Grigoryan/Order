@@ -1,0 +1,50 @@
+﻿@page "/add"
+@using Order.Common.Models
+@using System.Text.Json;
+@using System.Text;
+@inject HttpClient Http
+
+<h1>Add Provider</h1>
+
+@code {
+
+    private ProviderUIModel provider = new ProviderUIModel();
+    private StateUIModel[] states;
+
+    protected override async void OnInitialized()
+    {
+        states = await Http.GetFromJsonAsync<StateUIModel[]>("https://localhost:44377/State/Get");
+
+    }
+
+}
+<div>
+    <div>
+        <span><b>Name</b></span><br />      <input type="text" @bind="@provider.Name" />
+        <span><b>Address1</b></span><br />  <input type="text" @bind="@provider.Address1" />
+        <span><b>Address2</b></span><br />  <input type="text" @bind="@provider.Address2" />
+        <span><b>City</b></span><br />      <input type="text" @bind="@provider.City" />
+        <span><b>Zip</b></span><br />       <input type="text" @bind="@provider.Zip" />
+        <EditForm Model="@states">
+            <InputSelect @bind-Value="@provider.StateId">
+                @foreach (var state in states)
+                {
+                    <option value="@state?.Id">@state?.Name</option>
+                }
+            </InputSelect>
+        </EditForm>
+    </div>
+
+    <button class="btn btn-primary" @onclick="@Save">Save</button>
+
+</div>
+
+@code {
+
+    private async Task Save()
+    {
+        var providerModel = JsonSerializer.Serialize(provider);
+        var requestContent = new StringContent(providerModel, Encoding.UTF8, "application/json");
+        var response = await Http.PostAsync("https://localhost:44377/Provider/Post", requestContent);
+    }
+}

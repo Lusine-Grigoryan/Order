@@ -1,0 +1,58 @@
+﻿@page "/edit"
+@using Order.Common.Helpers
+@using Order.Common.Models
+@using System.Text.Json;
+@using System.Text;
+@inject HttpClient Http
+@inject HelpSevice helpSevice
+
+<h1>Edit Provider</h1>
+
+@code{
+    private StateUIModel[] states;
+
+    protected override async void OnInitialized()
+    {
+        states = await Http.GetFromJsonAsync<StateUIModel[]>("https://localhost:44377/State/Get");
+
+    }
+}
+
+@if (helpSevice.provider == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+    <div>
+        <div>
+            <div hidden="hidden"> <span><b>Id</b></span><br />  <input type="text" @bind="@helpSevice.provider.Id" /> </div>
+            <span><b>Name</b></span><br />      <input type="text" @bind="@helpSevice.provider.Name" />
+            <span><b>Address1</b></span><br />  <input type="text" @bind="@helpSevice.provider.Address1" />
+            <span><b>Address2</b></span><br />  <input type="text" @bind="@helpSevice.provider.Address2" />
+            <span><b>City</b></span><br />      <input type="text" @bind="@helpSevice.provider.City" />
+            <span><b>Zip</b></span><br />       <input type="text" @bind="@helpSevice.provider.Zip" />
+            <EditForm Model="@states">
+                <InputSelect @bind-Value="@helpSevice.provider.StateId">
+                    @foreach (var state in states)
+                        {
+                        <option value="@state?.Id">@state?.Name</option>
+                        }
+                </InputSelect>
+            </EditForm>
+        </div>
+
+        <button class="btn btn-primary" @onclick="@Save">Save</button>
+
+    </div>
+    @code {
+
+        private async Task Save()
+        {
+            var providerModel = JsonSerializer.Serialize(helpSevice.provider);
+            var requestContent = new StringContent(providerModel, Encoding.UTF8, "helpSevicelication/json");
+            var response = await Http.PutAsync("https://localhost:44377/Provider/Put", requestContent);
+        }
+    }
+}
